@@ -1,0 +1,17 @@
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.code-workspace
+.DS_Store
+
+# Temporary scripts
+split.py
+
+# Optional: You can ignore large audio/video assets if you don't want them in git
+# assets/audio/*.mp3
+# assets/images/*.png
