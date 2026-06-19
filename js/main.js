@@ -27,13 +27,13 @@ preloadImage('heart', HEART_SRC);
 // ─── AUDIO PLACEHOLDER SYSTEM ────────────────────────────────
 // Each method is a stub ready to be wired up with new Audio().
 const AudioFX = {
-  playTyping() { const a = new Audio('assets/audio/ketik.mp3'); a.play().catch(() => { }); },
-  playLaser() { const a = new Audio('assets/audio/laser.mp3'); a.play().catch(() => { }); },
-  playExplosion() { const a = new Audio('assets/audio/ledakan.mp3'); a.play().catch(() => { }); },
-  playBuff() { const a = new Audio('assets/audio/buff.mp3'); a.play().catch(() => { }); },
-  playHeal() { /* Add heal audio if available */ },
+  playTyping() { const a = new Audio('assets/audio/type.mp3'); a.play().catch(() => { }); },
+  playLaser() { const a = new Audio('assets/audio/laserShoot.wav'); a.play().catch(() => { }); },
+  playExplosion() { const a = new Audio('assets/audio/explosion.wav'); a.play().catch(() => { }); },
+  playBuff() { const a = new Audio('assets/audio/powerUp.wav'); a.play().catch(() => { }); },
+  playHeal() { const a = new Audio('assets/audio/heart.wav'); a.play().catch(() => { }); },
   playHit() { /* new Audio('hit.mp3').play(); */ },
-  playGameOver() { const a = new Audio('assets/audio/gameover.mp3'); a.play().catch(() => { }); },
+  playGameOver() { const a = new Audio('assets/audio/gameOver.wav'); a.play().catch(() => { }); },
 };
 
 // ─── WORD BANKS (scaled by difficulty, per language) ─────────
@@ -2149,6 +2149,14 @@ class Game {
       // Prevent space scrolling, etc.
       if (e.key === ' ' || e.key === 'Enter') e.preventDefault();
       this.handleKeyDown(e);
+    });
+
+    // Tab visibility listener (auto pause)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && this.state === 'playing') {
+        this.state = 'paused';
+        this.pauseMenuSelectedRow = 0;
+      }
     });
 
     // Mouse click listener for pause menu settings
