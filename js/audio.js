@@ -42,4 +42,9 @@ export const AudioFX = {
     a.volume = getSfxVolume() * 0.6;
     a.play().catch(() => { });
   },
+  playScoreUp() {
+    const a = new Audio('assets/audio/scoreUpwav.wav');
+    a.volume = getSfxVolume();
+    a.play().catch(() => { });
+  },
 };

@@ -47,6 +47,7 @@ export class Game {
     this.gameSpeed = 1.0;
     this.speedLevel = 1;
     this.lastSpeedUpScore = 0;
+    this.hasPlayedScore50Sound = false;
 
     // ── High Score ──
     const savedHighScore = localStorage.getItem('typing_space_shooter_highscore');
@@ -146,6 +147,7 @@ export class Game {
     this.gameSpeed = 1.0;
     this.speedLevel = 1;
     this.lastSpeedUpScore = 0;
+    this.hasPlayedScore50Sound = false;
     this.hearts = CONFIG.PLAYER_DEFAULT_HEARTS;
     this.activeBuff = null;
     this.hasShield = false;
@@ -474,6 +476,12 @@ export class Game {
 
     // Check speed progression
     this.checkSpeedUp();
+
+    // Play score up sound effect if score is 50 or above and hasn't played yet
+    if (this.score >= 50 && !this.hasPlayedScore50Sound) {
+      AudioFX.playScoreUp();
+      this.hasPlayedScore50Sound = true;
+    }
   }
 
   // ── SPEED PROGRESSION ──────────────────────────────────────
