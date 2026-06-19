@@ -37,4 +37,9 @@ export const AudioFX = {
     a.volume = getSfxVolume();
     a.play().catch(() => { });
   },
+  playErrorType() {
+    const a = new Audio('assets/audio/errorType.wav');
+    a.volume = getSfxVolume() * 0.6;
+    a.play().catch(() => { });
+  },
 };
