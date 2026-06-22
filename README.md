@@ -103,14 +103,20 @@ Use the IDE's integrated terminal to run one of the commands above, or install a
 ├── css/
 │   └── style.css           # Minimal styling
 ├── js/
-│   ├── main.js             # Game bootstrapper
+│   ├── main.js             # Game bootstrapper (thin entry point)
 │   ├── game.js             # Core state, update loop, spawning, collisions
 │   ├── input.js            # Keyboard input, pause menu navigation, click handling
-│   ├── config.js           # Word banks, UI text, game constants, buff definitions
+│   ├── config.js           # Game constants, UI text, buff definitions, image preloading
+│   ├── wordbanks.js        # Word banks (EN & ID, 4 difficulty tiers)
 │   ├── canvas.js           # Canvas singleton & resize handling
-│   ├── audio.js            # Sound effects & music manager
+│   ├── audio.js            # Sound effects & music manager (no window.game coupling)
 │   ├── utils.js            # Math utilities (rand, clamp, lerp, dist)
-│   ├── rendering.js        # All Canvas drawing (HUD, entities, menus, overlays)
+│   ├── rendering/
+│   │   ├── effects.js      # Scanlines, grid, heart shape
+│   │   ├── player.js       # Player ship + shield rendering
+│   │   ├── entity.js       # Alien / power-up / heart entity + word label rendering
+│   │   ├── hud.js          # Score, HP, buff bar, typing box
+│   │   └── menus.js        # Menu, game over, pause menu screens
 │   └── entities/
 │       ├── entity.js       # Alien / power-up / heart entity
 │       ├── bullet.js       # Laser bullet with trail
@@ -124,7 +130,7 @@ Use the IDE's integrated terminal to run one of the commands above, or install a
 
 ### Adding Words
 
-Edit `js/config.js` — word banks are organized by language and difficulty:
+Edit `js/wordbanks.js` — word banks are organized by language and difficulty:
 
 - `WORD_BANKS_EN` — English (easy / medium / hard / expert)
 - `WORD_BANKS_ID` — Indonesian (easy / medium / hard / expert)
@@ -132,6 +138,13 @@ Edit `js/config.js` — word banks are organized by language and difficulty:
 ### Adding Power-ups
 
 Add a new entry to `BUFF_TYPES` in `js/config.js` and implement its effect in `js/game.js`.
+
+### Code Conventions
+
+- **One module, one concern** — each file has a single responsibility
+- **No global state** — all shared state lives in the `Game` instance, passed explicitly
+- **No `window.game`** — audio volume is injected via `AudioFX.setVolume()`
+- **ES Modules** — all imports/exports are explicit; zero global leak
 
 ## 📝 License
 

@@ -1,8 +1,13 @@
 import { canvas, ctx } from './canvas.js';
-import { CONFIG, UI_TEXT, BUFF_TYPES, getWordBanks } from './config.js';
-import { AudioFX } from './audio.js';
+import { CONFIG, UI_TEXT, BUFF_TYPES } from './config.js';
+import { getWordBanks } from './wordbanks.js';
+import { AudioFX, setVolume as setAudioVolume } from './audio.js';
 import { randInt, clamp } from './utils.js';
-import { renderGrid, renderScanlines, renderPlayer, renderEntity, renderHUD, renderMenu, renderGameOver, renderPauseMenu } from './rendering.js';
+import { renderGrid, renderScanlines } from './rendering/effects.js';
+import { renderPlayer } from './rendering/player.js';
+import { renderEntity } from './rendering/entity.js';
+import { renderHUD } from './rendering/hud.js';
+import { renderMenu, renderGameOver, renderPauseMenu } from './rendering/menus.js';
 import { setupInputListeners } from './input.js';
 import { Star } from './entities/star.js';
 import { Particle } from './entities/particle.js';
@@ -21,6 +26,7 @@ export class Game {
     this.musicVolume = savedMusicVolume !== null ? parseFloat(savedMusicVolume) : 0.5;
     const savedSfxVolume = localStorage.getItem('typing_space_shooter_sfx_volume');
     this.sfxVolume = savedSfxVolume !== null ? parseFloat(savedSfxVolume) : 0.5;
+    setAudioVolume(this.sfxVolume);
     const savedErrorShake = localStorage.getItem('typing_space_shooter_error_shake');
     this.errorShakeEnabled = savedErrorShake !== null ? savedErrorShake === 'true' : true;
 
@@ -109,6 +115,7 @@ export class Game {
 
   setSfxVolume(vol) {
     this.sfxVolume = clamp(vol, 0, 1);
+    setAudioVolume(this.sfxVolume);
     localStorage.setItem('typing_space_shooter_sfx_volume', this.sfxVolume);
   }
 
