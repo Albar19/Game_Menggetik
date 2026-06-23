@@ -1,5 +1,6 @@
-import { ctx } from '../canvas.js';
-import { CONFIG, IMAGES } from '../config.js';
+import { ctx } from '../core/canvas.js';
+import { CONFIG, IMAGES } from '../config/config.js';
+import { drawHeartShape } from './effects.js';
 
 function renderTargetReticle(game, cx, cy, size) {
   const r = size * 0.7;
@@ -50,6 +51,9 @@ function renderWordLabel(e) {
 
   const borderColors = {
     alien: 'rgba(255, 50, 50, 0.6)',
+    speedy: 'rgba(0, 255, 255, 0.6)',
+    tank: 'rgba(204, 0, 255, 0.6)',
+    zigzag: 'rgba(0, 255, 102, 0.6)',
     luckybox: 'rgba(255, 215, 0, 0.6)',
     heart: 'rgba(255, 105, 180, 0.6)',
   };
@@ -98,14 +102,32 @@ export function renderEntity(game, e) {
     renderTargetReticle(game, cx, cy, s);
   }
 
-  if (e.type === 'alien') {
+  if (game.isAlien(e.type)) {
     if (IMAGES.alien) {
+      ctx.save();
+      if (e.type === 'speedy') {
+        ctx.filter = 'hue-rotate(180deg) saturate(1.5)';
+      } else if (e.type === 'tank') {
+        ctx.filter = 'hue-rotate(270deg) brightness(1.2) saturate(1.3)';
+      } else if (e.type === 'zigzag') {
+        ctx.filter = 'hue-rotate(90deg)';
+      }
       ctx.drawImage(IMAGES.alien, cx - s / 2, cy - s / 2, s, s);
+      ctx.restore();
     } else {
+      const themes = {
+        alien: { shadow: '#ff3333', stroke: 'rgba(255, 50, 50, ', fill: 'rgba(80, 10, 10, 0.7)', core: 'rgba(255, 80, 80, ' },
+        speedy: { shadow: '#00ffff', stroke: 'rgba(0, 255, 255, ', fill: 'rgba(10, 80, 80, 0.7)', core: 'rgba(100, 255, 255, ' },
+        tank: { shadow: '#cc00ff', stroke: 'rgba(204, 0, 255, ', fill: 'rgba(60, 10, 80, 0.7)', core: 'rgba(255, 120, 255, ' },
+        zigzag: { shadow: '#00ff66', stroke: 'rgba(0, 255, 102, ', fill: 'rgba(10, 80, 30, 0.7)', core: 'rgba(100, 255, 150, ' }
+      };
+      
+      const theme = themes[e.type] || themes.alien;
+      
       ctx.shadowBlur = 14;
-      ctx.shadowColor = '#ff3333';
-      ctx.strokeStyle = `rgba(255, 50, 50, ${pulse})`;
-      ctx.fillStyle = 'rgba(80, 10, 10, 0.7)';
+      ctx.shadowColor = theme.shadow;
+      ctx.strokeStyle = theme.stroke + pulse + ')';
+      ctx.fillStyle = theme.fill;
       ctx.lineWidth = 2;
       ctx.beginPath();
       for (let i = 0; i < 6; i++) {
@@ -119,7 +141,7 @@ export function renderEntity(game, e) {
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = `rgba(255, 80, 80, ${pulse})`;
+      ctx.fillStyle = theme.core + pulse + ')';
       ctx.beginPath();
       ctx.arc(cx, cy, s * 0.12, 0, Math.PI * 2);
       ctx.fill();
@@ -177,15 +199,4 @@ export function renderEntity(game, e) {
   }
 
   renderWordLabel(e);
-}
-
-function drawHeartShape(cx, cy, size) {
-  const w = size, h = size;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - h * 0.15);
-  ctx.bezierCurveTo(cx, cy - h * 0.55, cx - w * 0.55, cy - h * 0.55, cx - w * 0.55, cy - h * 0.15);
-  ctx.bezierCurveTo(cx - w * 0.55, cy + h * 0.15, cx, cy + h * 0.35, cx, cy + h * 0.55);
-  ctx.bezierCurveTo(cx, cy + h * 0.35, cx + w * 0.55, cy + h * 0.15, cx + w * 0.55, cy - h * 0.15);
-  ctx.bezierCurveTo(cx + w * 0.55, cy - h * 0.55, cx, cy - h * 0.55, cx, cy - h * 0.15);
-  ctx.closePath();
 }

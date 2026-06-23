@@ -1,4 +1,4 @@
-import { canvas, ctx } from '../canvas.js';
+import { canvas, ctx } from '../core/canvas.js';
 
 export function drawHeartShape(cx, cy, size) {
   const w = size, h = size;

@@ -1,4 +1,4 @@
-export { getWordBanks } from './wordbanks.js';
+export { getWordBanks } from './wordbanks/index.js';
 
 // ─── ASSET CONFIGURATION ─────────────────────────────────────
 export const PLAYER_SPACESHIP_SRC = 'assets/images/player.png';
@@ -92,9 +92,9 @@ export const UI_TEXT = {
 export const CONFIG = {
   PLAYER_DEFAULT_HEARTS: 3,
   PLAYER_MAX_HEARTS: 5,
-  BASE_FALL_SPEED: 70,           // pixels per second
+  BASE_FALL_SPEED: 48,           // pixels per second (slower descent for typing learners)
   BULLET_SPEED: 1100,            // pixels per second
-  BASE_ALIEN_SPAWN_MS: 2800,     // milliseconds
+  BASE_ALIEN_SPAWN_MS: 4200,     // milliseconds (more time between spawns)
   LUCKY_BOX_SPAWN_MS: 12000,
   HEART_SPAWN_MS: 18000,
   BUFF_DURATION_MS: 10000,

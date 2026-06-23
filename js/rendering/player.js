@@ -1,5 +1,5 @@
-import { ctx } from '../canvas.js';
-import { CONFIG, IMAGES } from '../config.js';
+import { ctx } from '../core/canvas.js';
+import { CONFIG, IMAGES } from '../config/config.js';
 
 export function renderPlayer(game) {
   const px = game.playerX;

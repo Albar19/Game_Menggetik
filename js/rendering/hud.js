@@ -1,16 +1,6 @@
-import { canvas, ctx } from '../canvas.js';
-import { CONFIG } from '../config.js';
-
-function drawHeartShape(cx, cy, size) {
-  const w = size, h = size;
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - h * 0.15);
-  ctx.bezierCurveTo(cx, cy - h * 0.55, cx - w * 0.55, cy - h * 0.55, cx - w * 0.55, cy - h * 0.15);
-  ctx.bezierCurveTo(cx - w * 0.55, cy + h * 0.15, cx, cy + h * 0.35, cx, cy + h * 0.55);
-  ctx.bezierCurveTo(cx, cy + h * 0.35, cx + w * 0.55, cy + h * 0.15, cx + w * 0.55, cy - h * 0.15);
-  ctx.bezierCurveTo(cx + w * 0.55, cy - h * 0.55, cx, cy - h * 0.55, cx, cy - h * 0.15);
-  ctx.closePath();
-}
+import { canvas, ctx } from '../core/canvas.js';
+import { CONFIG } from '../config/config.js';
+import { drawHeartShape } from './effects.js';
 
 function renderHearts(game) {
   const pad = 20;
@@ -108,6 +98,66 @@ function renderTypingBox(game) {
   }
 }
 
+
+
+function renderCombo(game) {
+  if (game.combo === 0) return;
+
+  const pad = 20;
+  const rx = canvas.width - pad;
+  const ry = canvas.height - 20;
+
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'bottom';
+
+  ctx.font = '11px "Share Tech Mono", monospace';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.fillText('STREAK', rx, ry - 32);
+
+  ctx.font = 'bold 28px "Orbitron", monospace';
+  const isHighCombo = game.combo >= 10;
+  if (isHighCombo) {
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#39ff14';
+    ctx.fillStyle = '#39ff14';
+  } else {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.shadowBlur = 0;
+  }
+  ctx.fillText(`x${game.combo}`, rx, ry - 6);
+  ctx.shadowBlur = 0;
+
+  ctx.font = '10px "Share Tech Mono", monospace';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.fillText(`MAX: ${game.maxCombo}`, rx, ry);
+
+  const multiplierProgress = (game.combo % 10) / 10;
+  const lineW = 60;
+  const lx = rx - lineW;
+  const ly = ry - 4;
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(lx, ly);
+  ctx.lineTo(rx, ly);
+  ctx.stroke();
+
+  if (multiplierProgress > 0) {
+    ctx.strokeStyle = isHighCombo ? '#39ff14' : '#0ff';
+    if (isHighCombo) {
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = '#39ff14';
+    }
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly);
+    ctx.lineTo(lx + lineW * multiplierProgress, ly);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+}
+
 export function renderHUD(game) {
   const pad = 20;
 
@@ -141,6 +191,7 @@ export function renderHUD(game) {
   ctx.fillText(`${game.currentFPS} FPS`, canvas.width - pad, pad + 24);
 
   renderHearts(game);
+  renderCombo(game);
 
   let buffBarBottomY = pad + 10;
   if (game.activeBuff) {
